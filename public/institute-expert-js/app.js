@@ -2310,12 +2310,190 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       update: false,
+      ran_update: false,
       ran_tab: false,
-      show_input_output_header_diameter: false
+      show_input_output_header_diameter: false,
+      show_transmitter: false,
+      show_pressure_transmitter: false,
+      show_thermometer_transmitter: false,
+      ran: {}
     };
   },
   created: function created() {
@@ -2346,6 +2524,25 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+    handleRanSubmit: function handleRanSubmit() {
+      var _this2 = this;
+
+      if (!this.ran_update) {
+        axios.post("/rans/".concat(this.$route.params.id), this.form).then(function (response) {
+          _this2.ran_update = true;
+
+          _this2.successNotify(response);
+        })["catch"](function (error) {
+          return _this2.errorNotify(error);
+        });
+      } else {
+        axios.put("/rans/".concat(this.$route.params.id), this.form).then(function (response) {
+          return _this2.successNotify(response);
+        })["catch"](function (error) {
+          return _this2.errorNotify(error);
+        });
+      }
+    },
     handleChange: function handleChange() {
       if (this.form.ran_count > 0) {
         this.show_input_output_header_diameter = true;
@@ -2354,22 +2551,35 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getDetailDevice: function getDetailDevice() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("/detail-devices/".concat(this.$route.params.id)).then(function (response) {
-        if (Object.entries(response.data).length > 0) {
-          _this2.form = response.data;
-          _this2.update = true;
+        if (_this3.form.ran_tab > 0) {
+          _this3.ran_tab = true;
+        }
 
-          if (_this2.form.ran_tab > 0) {
-            _this2.ran_tab = true;
+        if (Object.entries(response.data).length > 0) {
+          _this3.form = response.data;
+          _this3.update = true;
+
+          if (_this3.form.ran_tab > 0) {
+            _this3.ran_tab = true;
           }
         } else {
-          _this2.update = false;
+          _this3.update = false;
         }
       })["catch"](function (error) {
-        return _this2.errorNotify(error);
+        return _this3.errorNotify(error);
       });
+    },
+    handleOrifice: function handleOrifice() {
+      if (this.ran.ranmeasurement_system_type == 'اریفیس') this.show_transmitter = true;else this.show_transmitter = false;
+    },
+    handleBarometerType: function handleBarometerType() {
+      if (this.ran.barometer_type == 'دیجیتال') this.show_pressure_transmitter = true;else this.show_pressure_transmitter = false;
+    },
+    handleThermometerType: function handleThermometerType() {
+      if (this.ran.thermometer_type == 'دیجیتال') this.show_thermometer_transmitter = true;else this.show_thermometer_transmitter = false;
     }
   }
 });
@@ -25395,19 +25605,17 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("li", {}, [
-                  _vm.ran_tab
-                    ? _c(
-                        "a",
-                        {
-                          attrs: {
-                            href: "#ran-information",
-                            "data-toggle": "tab",
-                            "aria-expanded": "false"
-                          }
-                        },
-                        [_vm._v("رن\n                                ها")]
-                      )
-                    : _vm._e()
+                  _c(
+                    "a",
+                    {
+                      attrs: {
+                        href: "#ran-information",
+                        "data-toggle": "tab",
+                        "aria-expanded": "false"
+                      }
+                    },
+                    [_vm._v("رن\n                                ها")]
+                  )
                 ]),
                 _vm._v(" "),
                 _c("li", {}, [
@@ -26424,22 +26632,960 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm.ran_tab
-                  ? _c(
+                _c(
+                  "div",
+                  {
+                    staticClass: "tab-pane fade",
+                    attrs: { id: "ran-information" }
+                  },
+                  [
+                    _c(
                       "div",
-                      {
-                        staticClass: "tab-pane fade",
-                        attrs: { id: "ran-information" }
-                      },
+                      { staticClass: "container-fluid" },
                       [
                         _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-6" }, [_vm._v("d")]),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_capacity" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                ظرفيت هر مسير اندازه گيري بر حسب متر مكعب استاندارد در ساعت (نامی/\n                                                حداقل / حداكثر)\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.capacity,
+                                    expression: "ran.capacity"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_capacity",
+                                  placeholder: "مقادیر را با / جدا کنید"
+                                },
+                                domProps: { value: _vm.ran.capacity },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "capacity",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-6" }, [_vm._v("d")])
-                        ])
-                      ]
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_diameter" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                قطر مسير اندازه گيري "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.diameter,
+                                    expression: "ran.diameter"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_diameter",
+                                  placeholder:
+                                    "عدد صحیح باید وارد شود، واحد میلیمتر، محدوده اعداد بین 150 تا 900 میلیمتر"
+                                },
+                                domProps: { value: _vm.ran.diameter },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "diameter",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-2" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran.measurement_system_type" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                نوع سیستم اندازه گیری گاز "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.ran.ranmeasurement_system_type,
+                                      expression:
+                                        "ran.ranmeasurement_system_type"
+                                    }
+                                  ],
+                                  staticClass: "form-control form-control-sm",
+                                  attrs: {
+                                    name: "",
+                                    id: "ran.measurement_system_type"
+                                  },
+                                  on: {
+                                    change: [
+                                      function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "ranmeasurement_system_type",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      },
+                                      _vm.handleOrifice
+                                    ]
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "اریفیس" } }, [
+                                    _vm._v("اریفیس")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("option", { attrs: { value: "توربین" } }, [
+                                    _vm._v("توربین")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "آلتراسونیک" } },
+                                    [_vm._v("آلتراسونیک")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "سایر موارد" } },
+                                    [_vm._v("سایر موارد")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.show_transmitter
+                            ? _c("div", { staticClass: "col-md-4" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "ran_transmitter" } },
+                                    [
+                                      _vm._v(
+                                        "\n                                                ترانسميترهاي اختلاف فشار"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.ran.transmitter,
+                                        expression: "ran.transmitter"
+                                      }
+                                    ],
+                                    staticClass: "form-control form-control-sm",
+                                    attrs: {
+                                      type: "text",
+                                      id: "ran_transmitter",
+                                      placeholder: "ترانسميترهاي اختلاف فشار"
+                                    },
+                                    domProps: { value: _vm.ran.transmitter },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "transmitter",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_size" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                سایز دستگاه اصلي اندازه گيري گاز (قطر روزنه اریفيس/قطر كنتور\n                                                توربيني/قطر كنتور آلتراسونيك)\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.size,
+                                    expression: "ran.size"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_size",
+                                  placeholder: "مقادیر را با / جدا کنید"
+                                },
+                                domProps: { value: _vm.ran.size },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "size",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-3" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_valve_diameter" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                ولو ورودی به هر رن وجود دارد؟\n                                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.valve_diameter,
+                                    expression: "ran.valve_diameter"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_valve_diameter",
+                                  placeholder:
+                                    "در صورت وجود، مقدار آن را وارد نمایید"
+                                },
+                                domProps: { value: _vm.ran.valve_diameter },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "valve_diameter",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-3" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_has_filter" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                آیا استرینر یا فیلتر در رن وجود دارد؟ "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.has_filter,
+                                    expression: "ran.has_filter"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_has_filter",
+                                  placeholder:
+                                    "در صورت وجود، مقدار آن را وارد نمایید"
+                                },
+                                domProps: { value: _vm.ran.has_filter },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "has_filter",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "has_flow_conditioner" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                آیا فلوکاندیشنر دارد یا خیر؟"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.has_flow_conditioner,
+                                    expression: "ran.has_flow_conditioner"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "has_flow_conditioner",
+                                  placeholder:
+                                    "در صورت وجود، نوع و قطر آن را وارد نمایید"
+                                },
+                                domProps: {
+                                  value: _vm.ran.has_flow_conditioner
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "has_flow_conditioner",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_barometer_type" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                فشار سنج "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.ran.barometer_type,
+                                      expression: "ran.barometer_type"
+                                    }
+                                  ],
+                                  staticClass: "form-control form-control-sm",
+                                  attrs: { name: "", id: "ran_barometer_type" },
+                                  on: {
+                                    change: [
+                                      function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "barometer_type",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      },
+                                      _vm.handleBarometerType
+                                    ]
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "دیجیتال" } },
+                                    [_vm._v("دیجیتال")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "عقربه ای" } },
+                                    [_vm._v("عقربه ای")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_thermometer_type" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                دماسنج جریان گاز "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.ran.thermometer_type,
+                                      expression: "ran.thermometer_type"
+                                    }
+                                  ],
+                                  staticClass: "form-control form-control-sm",
+                                  attrs: {
+                                    name: "",
+                                    id: "ran_thermometer_type"
+                                  },
+                                  on: {
+                                    change: [
+                                      function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "thermometer_type",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      },
+                                      _vm.handleThermometerType
+                                    ]
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "دیجیتال" } },
+                                    [_vm._v("دیجیتال")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "عقربه ای" } },
+                                    [_vm._v("عقربه ای")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.show_pressure_transmitter
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "required",
+                                      attrs: { for: "ran_pressure_transmitter" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                                ترانسمیتر فشار"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.ran.pressure_transmitter,
+                                        expression: "ran.pressure_transmitter"
+                                      }
+                                    ],
+                                    staticClass: "form-control form-control-sm",
+                                    attrs: {
+                                      type: "text",
+                                      id: "ran_pressure_transmitter",
+                                      placeholder:
+                                        "در صورت وجود، اطلاعات آن را وارد نمایید"
+                                    },
+                                    domProps: {
+                                      value: _vm.ran.pressure_transmitter
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "pressure_transmitter",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.show_thermometer_transmitter
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "required",
+                                      attrs: { for: "ran_pressure_transmitter" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                                ترانسمیتر دما"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.ran.temperature_transmitter,
+                                        expression:
+                                          "ran.temperature_transmitter"
+                                      }
+                                    ],
+                                    staticClass: "form-control form-control-sm",
+                                    attrs: {
+                                      type: "text",
+                                      id: "ran_temperature_transmitter",
+                                      placeholder:
+                                        "در صورت وجود، اطلاعات آن را وارد نمایید"
+                                    },
+                                    domProps: {
+                                      value: _vm.ran.temperature_transmitter
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.ran,
+                                          "temperature_transmitter",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: {
+                                    for:
+                                      "ran_pie_length_flow_conditioner_before"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                              طول لوله مستقیم قبل از فلوکاندیشنر"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value:
+                                      _vm.ran
+                                        .pie_length_flow_conditioner_before,
+                                    expression:
+                                      "ran.pie_length_flow_conditioner_before"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_pie_length_flow_conditioner_before",
+                                  placeholder:
+                                    "طول لوله مستقیم قبل از فلوکاندیشنر"
+                                },
+                                domProps: {
+                                  value:
+                                    _vm.ran.pie_length_flow_conditioner_before
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "pie_length_flow_conditioner_before",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: {
+                                    for: "ran_pie_length_flow_conditioner_after"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                              طول لوله مستقیم بعد از فلوکاندیشنر"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value:
+                                      _vm.ran.pie_length_flow_conditioner_after,
+                                    expression:
+                                      "ran.pie_length_flow_conditioner_after"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_pie_length_flow_conditioner_after",
+                                  placeholder:
+                                    "طول لوله مستقیم بعد از فلوکاندیشنر"
+                                },
+                                domProps: {
+                                  value:
+                                    _vm.ran.pie_length_flow_conditioner_after
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "pie_length_flow_conditioner_after",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_pie_length_after" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                              طول مستقیم لوله بعد از کنتور"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.pie_length_after,
+                                    expression: "ran.pie_length_after"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_pie_length_after",
+                                  placeholder:
+                                    "طول مستقیم لوله بعد از فلوکاندیشنر"
+                                },
+                                domProps: { value: _vm.ran.pie_length_after },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "pie_length_after",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "required",
+                                  attrs: { for: "ran_has_blow_down" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                                آیا رن مجهز به بلودان است یا خیر؟"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.has_blow_down,
+                                    expression: "ran.has_blow_down"
+                                  }
+                                ],
+                                staticClass: "form-control form-control-sm",
+                                attrs: {
+                                  type: "text",
+                                  id: "ran_has_blow_down",
+                                  placeholder:
+                                    "در صورت وجود قطر آن را وارد نمایید"
+                                },
+                                domProps: { value: _vm.ran.has_blow_down },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.ran,
+                                      "has_blow_down",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                { attrs: { for: "ran_has_flow_meter" } },
+                                [_vm._v("آیا دماسنج بدنه فلومتر دارد یا خیر؟")]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ran.has_flow_meter,
+                                    expression: "ran.has_flow_meter"
+                                  }
+                                ],
+                                attrs: {
+                                  type: "checkbox",
+                                  id: "ran_has_flow_meter"
+                                },
+                                domProps: {
+                                  checked: Array.isArray(_vm.ran.has_flow_meter)
+                                    ? _vm._i(_vm.ran.has_flow_meter, null) > -1
+                                    : _vm.ran.has_flow_meter
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$a = _vm.ran.has_flow_meter,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = null,
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          _vm.$set(
+                                            _vm.ran,
+                                            "has_flow_meter",
+                                            $$a.concat([$$v])
+                                          )
+                                      } else {
+                                        $$i > -1 &&
+                                          _vm.$set(
+                                            _vm.ran,
+                                            "has_flow_meter",
+                                            $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1))
+                                          )
+                                      }
+                                    } else {
+                                      _vm.$set(_vm.ran, "has_flow_meter", $$c)
+                                    }
+                                  }
+                                }
+                              })
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("submit", { on: { click: _vm.handleRanSubmit } })
+                      ],
+                      1
                     )
-                  : _vm._e(),
+                  ]
+                ),
                 _vm._v(" "),
                 _c(
                   "div",

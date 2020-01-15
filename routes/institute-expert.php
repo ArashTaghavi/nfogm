@@ -41,6 +41,13 @@ Route::middleware(['web', 'auth:web'])->group(function () {
         });
         // ================================ Detail Devices ================================
 
+        // ================================ Rans ================================
+        Route::prefix('rans')->name('rans.')->group(function () {
+            Route::post('/{id}', 'RanController@store')->name('store');
+            Route::put('/{id}', 'RanController@update')->name('update');
+        });
+        // ================================ Rans ================================
+
         Route::prefix('base-information')->name('base-information.')->group(function () {
             Route::get('/permissions', 'BaseInformationController@permissions')->name('permissions');
         });
